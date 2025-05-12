@@ -1,11 +1,36 @@
 
-"use client"
-import { signIn } from "next-auth/react";
+
+import { auth, authOptions, handlers } from "./auth";
+import GitHub from "next-auth/providers/github"
 
 
+export default async function Home() {
+  const session = await auth()
+console.log(session)
+  if (!session?.accessToken) {
+    return <p>{JSON.stringify(session)}</p>;
+  }
 
-export default function Home() {
+  // Fetch private repos from GitHub
+  const res = await fetch("https://api.github.com/user/repos?visibility=private&affiliation=owner", {
+    headers: {
+      Authorization: `token ${session.accessToken}`,
+    },
+    next: { revalidate: 60 }, // optional caching for 60 seconds
+  });
+
+  const repos = await res.json();
+
   return (
-   <button  onClick={() => signIn("github")}>Sign In with Github</button>
+    <div className="max-w-3xl mx-auto py-8">
+      <h1 className="text-2xl font-bold mb-4">Your Private GitHub Repositories</h1>
+      <ul className="space-y-2">
+        {repos.map((repo: any) => (
+          <li key={repo.id} className="bg-gray-100 rounded px-4 py-2">
+            {repo.full_name}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
