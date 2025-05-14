@@ -1,9 +1,11 @@
-import { getToken } from "next-auth/jwt";
+// import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "./app/auth";
+
 
 export async function middleware(req:NextRequest) {
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-
+    const session:any = await auth()
+console.log(session ," session from the middleware")
   const { pathname } = req.nextUrl;
 
   // Allow requests to public routes
@@ -11,8 +13,9 @@ export async function middleware(req:NextRequest) {
     return NextResponse.next();
   }
 
-  // Redirect unauthenticated users to the sign-in page
-  if (!token) {
+  // Redirect unauthenticated users to the sign-in pageS
+  if (!session || !session.accessToken) {
+    console.log("Redirecting here");
     const signinUrl = new URL("/signin", req.url);
     return NextResponse.redirect(signinUrl);
   }
@@ -23,5 +26,5 @@ export async function middleware(req:NextRequest) {
 
 export const config = {
   // Specify routes to apply middleware (protected routes)
-  matcher: ["/protected/:path*", "/dashboard/:path*", "/" ],
+  matcher: ["/protected/:path*", "/dashboard/:path*"],
 };

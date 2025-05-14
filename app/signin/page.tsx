@@ -18,8 +18,7 @@ export default function Signin() {
           className="text-xl
 "
           onClick={()=>{
-            signIn("github")
-            router.push("/")
+            signIn("github", { callbackUrl: "/dashboard" });
           }}
         >
           Login with Github

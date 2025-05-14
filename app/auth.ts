@@ -12,16 +12,12 @@ export const authOptions={
     ],
     callbacks: {
       async jwt({ token, account }:any) {
-          console.log("JWT token ")
-          console.log(account)
         if (account) {
           token.accessToken = account.access_token; // store access token
         }
         return token;
       },
       async session({ session, token ,user}:any) {
-          console.log(user)
-          console.log(session)
           session.accessToken = token.accessToken; // expose access token to client
         return session;
   
