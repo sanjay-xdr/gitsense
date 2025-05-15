@@ -12,12 +12,14 @@ export default async function Navbar() {
     <nav className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         {/* Logo */}
-        <div className="text-2xl font-bold">GitSense</div>
+        <div className="text-2xl font-bold">
+          <Link href={"/"} className="hover:text-grey-400 transition"> GitSense</Link>
+        </div>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-6 items-center">
-          <Link href="/" className="hover:text-gray-300 transition">
-            Home
+          <Link href="/repos" className="hover:text-gray-300 transition">
+            Repos
           </Link>
           {session ? (
             <AvatarDropdown session={session} />
