@@ -4,6 +4,8 @@ import { BackgroundFlare } from "@/components/background-flare"
 import { GitHubIcon } from "@/components/github-icon"
 import { FeatureCard } from "@/components/feature-card"
 import { Button } from "@/components/ui/button"
+import { PreviewSection } from "@/components/preview-section"
+
 // import { Testimonial } from "@/components/testimonial"
 
 export default function Home() {
@@ -93,6 +95,11 @@ export default function Home() {
             description="No installation required. Just enter a repository and start exploring."
           />
         </div>
+      </section>
+
+           {/* Preview Section with Globe */}
+      <section id="preview" className="py-10">
+        <PreviewSection />
       </section>
 
       {/* Testimonials
