@@ -4,6 +4,10 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { GitFork, Star, AlertCircle, Eye, GitPullRequest, Calendar, Clock, ExternalLink } from 'lucide-react'
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { fetchUserDetails } from "@/utils/github/github"
+import { UserDetails } from "@/types/github/github"
 
 async function fetchRepoDetails(owner: string, repo: string) {
   const session: any = await auth()
@@ -35,7 +39,10 @@ async function fetchRepoDetails(owner: string, repo: string) {
       },
     })
     const contributors = await contributorsResponse.json()
+    // console.log(contributors, " this is the contributors list");
 
+  
+    
     return { repoDetails, pullRequests, contributors }
   } catch (error) {
     console.error("Error fetching repository details:", error)
@@ -58,16 +65,17 @@ function formatDate(dateString: string) {
 }
 
 export default async function Page({
-  params,
+  params
 }: {
-  params: { repoName: string[] } // Catch-all route for [...repoName]
+  params: { repoName: string[] }
 }) {
 
-  const { repoName } = params
+  const { repoName } = await params
   const { repoDetails, pullRequests, contributors } = await fetchRepoDetails(
     repoName[0],
     repoName[1],
   )
+
 
   if (!repoDetails) {
     return (
@@ -341,6 +349,7 @@ export default async function Page({
                       <p className="font-medium">{contributor.login}</p>
                       <p className="text-sm text-muted-foreground">{contributor.contributions} contributions</p>
                     </div>
+               <Link href={`/userDetails/${contributor.login}`}>     <Button className="cursor-pointer">See More Details</Button></Link>
                     <a
                       href={contributor.html_url}
                       target="_blank"

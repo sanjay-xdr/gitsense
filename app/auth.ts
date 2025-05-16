@@ -28,7 +28,7 @@ export const authOptions :NextAuthConfig={
       },
       async session({ session, token }: { session: Session; token: DefaultJWT }) {
         (session as SessionTypeUnion).accessToken = (token as JwtUnion).accessToken; // expose access token to client
-        session.expires = "test";
+        // session.expires = "test";
         // You can add properties to session here if needed
 
         return session;
