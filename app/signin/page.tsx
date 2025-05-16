@@ -18,7 +18,7 @@ export default function Signin() {
           className="text-xl
 "
           onClick={()=>{
-            signIn("github", { callbackUrl: "/dashboard" });
+            signIn("github", { callbackUrl: "/repos" });
           }}
         >
           Login with Github
