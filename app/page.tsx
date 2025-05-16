@@ -1,10 +1,11 @@
 // import { SearchForm } from "@/components/search-form"
-import { Card, CardContent } from "@/components/ui/card"
-import { BackgroundFlare } from "@/components/background-flare"
-import { GitHubIcon } from "@/components/github-icon"
-import { FeatureCard } from "@/components/feature-card"
-import { Button } from "@/components/ui/button"
-import { PreviewSection } from "@/components/preview-section"
+import { Card, CardContent } from "@/components/ui/card";
+import { BackgroundFlare } from "@/components/background-flare";
+import { GitHubIcon } from "@/components/github-icon";
+import { FeatureCard } from "@/components/feature-card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+// import { PreviewSection } from "@/components/preview-section"
 
 // import { Testimonial } from "@/components/testimonial"
 
@@ -22,13 +23,22 @@ export default function Home() {
             <span className="text-xl font-bold">GitSense</span>
           </div>
           <div className="hidden md:flex gap-6">
-            <a href="#features" className="text-slate-600 hover:text-slate-900 transition-colors">
+            <a
+              href="#features"
+              className="text-slate-600 hover:text-slate-900 transition-colors"
+            >
               Features
             </a>
-            <a href="#testimonials" className="text-slate-600 hover:text-slate-900 transition-colors">
+            <a
+              href="#testimonials"
+              className="text-slate-600 hover:text-slate-900 transition-colors"
+            >
               Testimonials
             </a>
-            <a href="#get-started" className="text-slate-600 hover:text-slate-900 transition-colors">
+            <a
+              href="#get-started"
+              className="text-slate-600 hover:text-slate-900 transition-colors"
+            >
               Get Started
             </a>
           </div>
@@ -41,27 +51,25 @@ export default function Home() {
           Visualize Your GitHub Repositories Like Never Before
         </h1>
         <p className="text-xl md:text-2xl text-slate-700 max-w-3xl mb-10">
-          GitSense transforms your GitHub data into beautiful, interactive dashboards. Gain deeper insights into your
-          repositories, track activity, and make better decisions.
+          GitSense transforms your GitHub data into beautiful, interactive
+          dashboards. Gain deeper insights into your repositories, track
+          activity, and make better decisions.
         </p>
 
         <div className="w-full max-w-md mb-16">
-          <Button>Get Started</Button>
-        </div>
-
-        <div className="relative w-full max-w-5xl mx-auto rounded-lg overflow-hidden shadow-xl border border-slate-200">
-          <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-purple-500/10 backdrop-blur-sm"></div>
-          <img
-            src="/placeholder.svg?height=600&width=1200"
-            alt="GitSense Dashboard Preview"
-            className="w-full h-auto relative z-10 opacity-90 hover:opacity-100 transition-opacity"
-          />
+        <Link href={"/repos"}>
+          <button className="px-6 py-3 text-white font-medium text-lg rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 shadow-lg hover:shadow-xl hover:from-purple-500 hover:to-blue-500 transform hover:scale-105 transition-all duration-300 cursor-pointer">
+            Get Started 🚀
+          </button>
+          </Link>
         </div>
       </section>
 
       {/* Features Section */}
       <section id="features" className="container mx-auto px-4 py-20">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">Powerful Features for Developers</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+          Powerful Features for Developers
+        </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <FeatureCard
@@ -97,10 +105,10 @@ export default function Home() {
         </div>
       </section>
 
-           {/* Preview Section with Globe */}
-      <section id="preview" className="py-10">
+      {/* Preview Section with Globe */}
+      {/* <section id="preview" className="py-10">
         <PreviewSection />
-      </section>
+      </section> */}
 
       {/* Testimonials
       <section id="testimonials" className="container mx-auto px-4 py-20 relative z-10">
@@ -129,22 +137,26 @@ export default function Home() {
       </section> */}
 
       {/* CTA Section */}
-      <section id="get-started" className="container mx-auto px-4 py-20 text-center">
+      {/* <section
+        id="get-started"
+        className="container mx-auto px-4 py-20 text-center"
+      >
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Get Started?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Ready to Get Started?
+          </h2>
           <p className="text-xl text-slate-700 mb-10">
-            Enter any public GitHub repository and start exploring with GitSense today. No registration required.
+            Enter any public GitHub repository and start exploring with GitSense
+            today. No registration required.
           </p>
 
           <div className="w-full max-w-md mx-auto">
             <Card className="border-slate-200 bg-white/80 backdrop-blur-sm shadow-md">
-              <CardContent className="pt-6">
-                {/* <SearchForm /> */}
-              </CardContent>
+              <CardContent className="pt-6"><SearchForm /></CardContent>
             </Card>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Footer */}
       <footer className="container mx-auto px-4 py-10 border-t border-slate-200">
@@ -153,9 +165,11 @@ export default function Home() {
             <GitHubIcon className="h-6 w-6" />
             <span className="font-bold">GitSense</span>
           </div>
-          <div className="text-sm text-slate-500">© {new Date().getFullYear()} GitSense. All rights reserved.</div>
+          <div className="text-sm text-slate-500">
+            © {new Date().getFullYear()} GitSense. All rights reserved.
+          </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }

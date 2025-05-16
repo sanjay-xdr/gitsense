@@ -5,18 +5,25 @@ import { motion } from "framer-motion"
 
 export function BackgroundFlare() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
+    // Set the flag to true once the component is mounted on the client
+    setIsClient(true)
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
 
-    window.addEventListener("mousemove", handleMouseMove)
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
+    if (typeof window !== "undefined") {
+      window.addEventListener("mousemove", handleMouseMove)
+      return () => {
+        window.removeEventListener("mousemove", handleMouseMove)
+      }
     }
   }, [])
+
+  if (!isClient) return null // Render nothing during SSR
 
   return (
     <>
