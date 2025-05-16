@@ -1,6 +1,6 @@
 import axios from "axios";
 import { auth } from "../auth";
-import RepoDropdown from "../components/RepoDropDown";
+import RepoDropdown from "../../components/RepoDropDown";
 
 async function fetchAllRepos(session: any) {
   

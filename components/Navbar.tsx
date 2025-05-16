@@ -2,7 +2,7 @@
 import Link from "next/link";
 import AvatarDropdown from "./AvatarDropdown"; // Client Component for dropdown interactivity
 import { signIn } from "next-auth/react";
-import {auth} from "../auth"
+import {auth} from "../app/auth"
 
 
 export default async function Navbar() {
