@@ -123,29 +123,59 @@ export default async function Page({
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Stars</p>
-                <p className="text-2xl font-bold">{repoDetails.stargazers_count.toLocaleString()}</p>
-              </div>
-              <Star className="h-8 w-8 text-yellow-400" />
-            </div>
-          </CardContent>
-        </Card>
+        <Card className="bg-gradient-to-br from-yellow-50 via-white to-white shadow-lg border-0">
+      <CardContent className="pt-7 pb-6 px-7">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col gap-1">
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-yellow-800 bg-yellow-100 rounded-full px-2 py-0.5 w-fit mb-1">
+              <Star className="h-4 w-4 text-yellow-500" />
+              Stars
+            </span>
+            <span className="text-3xl font-bold text-gray-800 tracking-tight drop-shadow">
+              {repoDetails.stargazers_count.toLocaleString()}
+            </span>
+          <Link href={`/stargazer/${repoName[0]}/${repoName[1]}?page=1`} >
+            <Button
+              variant="default"
+              className="mt-3 w-fit bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-semibold shadow-sm cursor-pointer"
+              // onClick={onViewStargazers}
+            >
+              View Stargazers
+            </Button>
+          </Link>
+          </div>
+          <div className="rounded-full bg-yellow-100 p-4 flex items-center justify-center shadow-inner">
+            <Star className="h-10 w-10 text-yellow-400 drop-shadow" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
 
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Forks</p>
-                <p className="text-2xl font-bold">{repoDetails.forks_count.toLocaleString()}</p>
-              </div>
-              <GitFork className="h-8 w-8 text-blue-400" />
-            </div>
-          </CardContent>
-        </Card>
+      <Card className="bg-gradient-to-br from-blue-50 via-white to-white shadow-lg border-0">
+      <CardContent className="pt-7 pb-6 px-7">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col gap-1">
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full px-2 py-0.5 w-fit mb-1">
+              <GitFork className="h-4 w-4 text-blue-500" />
+              Forks
+            </span>
+            <span className="text-3xl font-bold text-gray-800 tracking-tight drop-shadow">
+              {repoDetails.forks_count.toLocaleString()}
+            </span>
+            <Button
+              variant="default"
+              className="mt-3 w-fit bg-blue-400 hover:bg-blue-300 text-blue-900 font-semibold shadow-sm cursor-pointer"
+              // onClick={onViewForks}
+            >
+              View Forks
+            </Button>
+          </div>
+          <div className="rounded-full bg-blue-100 p-4 flex items-center justify-center shadow-inner">
+            <GitFork className="h-10 w-10 text-blue-400 drop-shadow" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
 
         <Card>
           <CardContent className="pt-6">
