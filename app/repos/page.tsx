@@ -59,7 +59,7 @@ export default async function Dashboard() {
       ) : (
         <p className="text-center text-gray-500">No repositories found.</p>
       )}
-  <h2 className="text-lg text-center mt-4">OR</h2>
+      <h2 className="text-lg text-center mt-4">OR</h2>
       <div className="w-full max-w mt-8">
         <Card className="border-slate-200 bg-white/80 backdrop-blur-sm shadow-md">
           <CardContent className="pt-6">

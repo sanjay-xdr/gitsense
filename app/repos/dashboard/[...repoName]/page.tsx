@@ -1,3 +1,4 @@
+
 import { auth } from "@/app/auth"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -8,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { fetchUserDetails } from "@/utils/github/github"
 import { UserDetails } from "@/types/github/github"
+import UserCard from "@/components/UserCard"
 
 async function fetchRepoDetails(owner: string, repo: string) {
   const session: any = await auth()
@@ -16,33 +18,24 @@ async function fetchRepoDetails(owner: string, repo: string) {
   const contributorsUrl = `https://api.github.com/repos/${owner}/${repo}/contributors?per_page=10`
 
   try {
-    // Fetch repository details
     const repoResponse = await fetch(repoUrl, {
       headers: {
         Authorization: `Bearer ${session.accessToken}`,
       },
     })
     const repoDetails = await repoResponse.json()
-
-    // Fetch pull requests
     const prResponse = await fetch(prUrl, {
       headers: {
         Authorization: `Bearer ${session.accessToken}`,
       },
     })
     const pullRequests = await prResponse.json()
-
-    // Fetch contributors
     const contributorsResponse = await fetch(contributorsUrl, {
       headers: {
         Authorization: `Bearer ${session.accessToken}`,
       },
     })
     const contributors = await contributorsResponse.json()
-    // console.log(contributors, " this is the contributors list");
-
-  
-    
     return { repoDetails, pullRequests, contributors }
   } catch (error) {
     console.error("Error fetching repository details:", error)
@@ -221,8 +214,7 @@ export default async function Page({
               </div>
             </CardContent>
           </Card>
-          
-          {/* Simple Stats Visualization */}
+
           <Card>
             <CardHeader>
               <CardTitle>Repository Stats</CardTitle>
@@ -285,7 +277,6 @@ export default async function Page({
           </Card>
         </TabsContent>
 
-        {/* Pull Requests Tab */}
         <TabsContent value="pulls" className="space-y-4">
           <Card>
             <CardHeader>
@@ -331,7 +322,6 @@ export default async function Page({
           </Card>
         </TabsContent>
 
-        {/* Contributors Tab */}
         <TabsContent value="contributors" className="space-y-4">
           <Card>
             <CardHeader>
@@ -340,25 +330,7 @@ export default async function Page({
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {contributors.map((contributor: any) => (
-                  <div key={contributor.id} className="flex items-center gap-4 p-4 rounded-lg border">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={contributor.avatar_url || "/placeholder.svg?height=48&width=48"} alt={contributor.login} />
-                      <AvatarFallback>{contributor.login.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <p className="font-medium">{contributor.login}</p>
-                      <p className="text-sm text-muted-foreground">{contributor.contributions} contributions</p>
-                    </div>
-               <Link href={`/userDetails/${contributor.login}`}>     <Button className="cursor-pointer">See More Details</Button></Link>
-                    <a
-                      href={contributor.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  </div>
+                <UserCard key={contributor.id} contributor={contributor}/>
                 ))}
               </div>
             </CardContent>
