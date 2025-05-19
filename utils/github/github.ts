@@ -28,31 +28,14 @@ export const fetchUserDetails = async (
   }
 };
 
-export const getStargazers = async (
-  owner: string,
-  repo: string,
-  perPage: number = 30,
-  page: number = 1
-) => {
-  const session: any = await auth();
-
-  let stargazers: any = [];
-  let hasMore = true;
-  const headers = {
-    Authorization: `Bearer ${session.accessToken}`,
-    Accept: "application/vnd.github.v3+json",
-  };
-
-  while (hasMore) {
-    const res = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/stargazers?per_page=${perPage}&page=${page}`,
-      { headers }
-    );
-    if (!res.ok) break;
-    const data = await res.json();
-    stargazers = stargazers.concat(data);
-    hasMore = data.length === perPage;
-    page += 1;
-  }
-  return stargazers;
-};
+export async function getStargazers(owner:string, repo:string, perPage = 30, page = 1) {
+  const res = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/stargazers?per_page=${perPage}&page=${page}`,
+    {
+      headers: { Accept: "application/vnd.github.v3+json" },
+      next: { revalidate: 60 }
+    }
+  );
+  if (!res.ok) return [];
+  return await res.json();
+}
