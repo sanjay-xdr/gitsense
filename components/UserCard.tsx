@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 
 export default async function UserCard({ contributor }: { contributor: any }) {
+  console.log(contributor);
   const data = await fetchUserDetails(contributor.login);
 
   return (

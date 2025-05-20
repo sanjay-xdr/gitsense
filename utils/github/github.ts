@@ -6,6 +6,7 @@ const BASE_URL = "https://api.github.com";
 export const fetchUserDetails = async (
   username: string
 ): Promise<UserDetails> => {
+  console.log(username);
   const session: any = await auth();
   if (!session) {
     throw new Error(`Failed to fetch user details: Please login again`);
@@ -36,6 +37,7 @@ export async function getStargazers(owner:string, repo:string, perPage = 30, pag
       next: { revalidate: 60 }
     }
   );
+  // console.log(await res.json(), " this is the get Stargazers");
   if (!res.ok) return [];
   return await res.json();
 }

@@ -1,3 +1,5 @@
+import UserDetails from "@/app/userDetails/[userName]/page";
+import UserCard from "@/components/UserCard";
 import { getStargazers } from "@/utils/github/github";
 import React from "react";
 
@@ -11,8 +13,9 @@ export default async function Page({
   const { repoName } = await params;
   const owner = repoName[0];
   const repo = repoName[1];
-  const perPage = 10;
- const page=parseInt(searchParams?.page) || 1;
+  const perPage = 12;
+  let urlQuery=await searchParams;
+ const page=parseInt(urlQuery?.page) || 1;
 
   // Fetch one extra to check if there are more pages
   const stargazers = await getStargazers(owner, repo, perPage, page);
@@ -20,115 +23,34 @@ export default async function Page({
   const hasPrev = page > 1;
 
   return (
-    <main
-      style={{
-        maxWidth: 500,
-        margin: "2rem auto",
-        background: "#fff",
-        borderRadius: 12,
-        boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-        padding: "2rem",
-      }}
-    >
-      <h1
-        style={{
-          textAlign: "center",
-          fontSize: "2rem",
-          fontWeight: 700,
-          marginBottom: "1.5rem",
-          color: "#333",
-        }}
-      >
-        ⭐ Stargazers for{" "}
-        <span style={{ color: "#0070f3" }}>
+      <main className=" mx-auto my-8 pl-16 pr-16 bg-white rounded-lg shadow-md font-sans">
+      <h1 className="text-center text-4xl font-bold mb-6 text-gray-800">
+        ⭐ Stargazers for{' '}
+        <span className="text-blue-500">
           {owner}/{repo}
         </span>
       </h1>
-      <ul
-        style={{
-          listStyle: "none",
-          padding: 0,
-          margin: 0,
-          display: "grid",
-          gap: "1rem",
-        }}
-      >
+      <ul className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {stargazers.map((user) => (
-          <li
-            key={user.id}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-              background: "#f9f9f9",
-              borderRadius: 8,
-              padding: "0.75rem 1rem",
-            }}
-          >
-            <img
-              src={user.avatar_url}
-              alt={user.login}
-              width={40}
-              height={40}
-              style={{
-                borderRadius: "50%",
-                border: "2px solid #eaeaea",
-                background: "#fff",
-              }}
-            />
-            <a
-              href={user.html_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontWeight: 500,
-                color: "#0070f3",
-                textDecoration: "none",
-                fontSize: "1.1rem",
-              }}
-            >
-              {user.login}
-            </a>
-          </li>
+          <UserCard key={user.id} contributor={user} />
         ))}
       </ul>
-      <nav
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: "2rem",
-        }}
-      >
+      <nav className="flex justify-center items-center mt-8 space-x-4">
         <a
           href={`?page=${page - 1}`}
-          style={{
-            pointerEvents: hasPrev ? "auto" : "none",
-            opacity: hasPrev ? 1 : 0.4,
-            color: "#0070f3",
-            padding: "0.5rem 1rem",
-            borderRadius: 6,
-            background: "#eaeaea",
-            textDecoration: "none",
-            fontWeight: 500,
-          }}
+          className={`px-4 py-2 bg-gray-200 rounded font-medium hover:bg-gray-300 transition ${
+            hasPrev ? '' : 'opacity-50 pointer-events-none'
+          }`}
           aria-disabled={!hasPrev}
         >
           ← Prev
         </a>
-        <span style={{ fontWeight: 600, color: "#333" }}>Page {page}</span>
+        <span className="font-semibold text-gray-700">Page {page}</span>
         <a
           href={`?page=${page + 1}`}
-          style={{
-            pointerEvents: hasNext ? "auto" : "none",
-            opacity: hasNext ? 1 : 0.4,
-            color: "#0070f3",
-            padding: "0.5rem 1rem",
-            borderRadius: 6,
-            background: "#eaeaea",
-            textDecoration: "none",
-            fontWeight: 500,
-          }}
+          className={`px-4 py-2 bg-gray-200 rounded font-medium hover:bg-gray-300 transition ${
+            hasNext ? '' : 'opacity-50 pointer-events-none'
+          }`}
           aria-disabled={!hasNext}
         >
           Next →
