@@ -162,6 +162,7 @@ export default async function Page({
             <span className="text-3xl font-bold text-gray-800 tracking-tight drop-shadow">
               {repoDetails.forks_count.toLocaleString()}
             </span>
+            <Link href={`/forks/${repoName[0]}/${repoName[1]}?page=1`}>
             <Button
               variant="default"
               className="mt-3 w-fit bg-blue-400 hover:bg-blue-300 text-blue-900 font-semibold shadow-sm cursor-pointer"
@@ -169,6 +170,7 @@ export default async function Page({
             >
               View Forks
             </Button>
+            </Link>
           </div>
           <div className="rounded-full bg-blue-100 p-4 flex items-center justify-center shadow-inner">
             <GitFork className="h-10 w-10 text-blue-400 drop-shadow" />
