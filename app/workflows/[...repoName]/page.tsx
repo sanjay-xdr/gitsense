@@ -8,10 +8,13 @@ interface WorkflowPageParams {
   repo: string;
 }
 
-export default async function WorkflowPage({ params }: { params: WorkflowPageParams }) {
+export default async function WorkflowPage({ params }:  {
+  params:{ repoName: string[] }
+}) {
 
-let owner="vercel";
-let repo="next.js"
+  const { repoName } = await params;
+  const owner = repoName[0];
+  const repo = repoName[1];
   const workflows = await getRepoWorkflows(owner, repo);
 
   let initialSelectedWorkflowRuns: WorkflowRun[] = [];
