@@ -1,3 +1,4 @@
+"use server"
 import { auth } from "@/app/auth";
 import { UserDetails } from "../../types/github/github";
 import axios from "axios";
@@ -29,12 +30,17 @@ export const fetchUserDetails = async (
   }
 };
 
-export async function getStargazers(owner:string, repo:string, perPage = 30, page = 1) {
+export async function getStargazers(
+  owner: string,
+  repo: string,
+  perPage = 30,
+  page = 1
+) {
   const res = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/stargazers?per_page=${perPage}&page=${page}`,
     {
       headers: { Accept: "application/vnd.github.v3+json" },
-      next: { revalidate: 60 }
+      next: { revalidate: 60 },
     }
   );
   // console.log(await res.json(), " this is the get Stargazers");
@@ -42,12 +48,17 @@ export async function getStargazers(owner:string, repo:string, perPage = 30, pag
   return await res.json();
 }
 
-export async function getForkUsers(owner: string, repo: string, perPage = 30, page = 1) {
+export async function getForkUsers(
+  owner: string,
+  repo: string,
+  perPage = 30,
+  page = 1
+) {
   const res = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/forks?per_page=${perPage}&page=${page}`, // Changed 'stargazers' to 'forks'
     {
       headers: { Accept: "application/vnd.github.v3+json" },
-      next: { revalidate: 60 } // This is a Next.js specific option for ISR/caching
+      next: { revalidate: 60 }, // This is a Next.js specific option for ISR/caching
     }
   );
 
@@ -69,14 +80,13 @@ export async function getForkUsers(owner: string, repo: string, perPage = 30, pa
   // Each fork object has an 'owner' property, which is the user who forked the repo.
   // We need to extract these 'owner' objects.
   if (Array.isArray(forksData)) {
-    return forksData.map(fork => fork.owner); // Extract the user object from each fork
+    return forksData.map((fork) => fork.owner); // Extract the user object from each fork
   } else {
     // This case should ideally not happen if res.ok is true and API behaves as expected
     // console.error("Fetched forks data is not an array:", forksData);
     return [];
   }
 }
-
 
 // lib/github.ts
 
@@ -88,13 +98,17 @@ const commonHeaders = {
   ...(GITHUB_TOKEN && { Authorization: `token ${GITHUB_TOKEN}` }),
 };
 
-
 export interface Workflow {
   id: number;
   node_id: string;
   name: string;
   path: string;
-  state: "active" | "deleted" | "disabled_fork" | "disabled_inactivity" | "disabled_manually";
+  state:
+    | "active"
+    | "deleted"
+    | "disabled_fork"
+    | "disabled_inactivity"
+    | "disabled_manually";
   created_at: string;
   updated_at: string;
   url: string;
@@ -104,9 +118,29 @@ export interface Workflow {
 
 export interface WorkflowRun {
   id: number;
-  name: string; 
-  status: "queued" | "in_progress" | "completed" | "action_required" | "cancelled" | "failure" | "neutral" | "skipped" | "stale" | "success" | "timed_out" | "waiting";
-  conclusion: "success" | "failure" | "neutral" | "cancelled" | "skipped" | "timed_out" | "action_required" | null;
+  name: string;
+  status:
+    | "queued"
+    | "in_progress"
+    | "completed"
+    | "action_required"
+    | "cancelled"
+    | "failure"
+    | "neutral"
+    | "skipped"
+    | "stale"
+    | "success"
+    | "timed_out"
+    | "waiting";
+  conclusion:
+    | "success"
+    | "failure"
+    | "neutral"
+    | "cancelled"
+    | "skipped"
+    | "timed_out"
+    | "action_required"
+    | null;
   actor: {
     login: string;
     avatar_url: string;
@@ -130,17 +164,25 @@ interface WorkflowRunsResponse {
   workflow_runs: WorkflowRun[];
 }
 
-
-export async function getRepoWorkflows(owner: string, repo: string): Promise<Workflow[]> {
+export async function getRepoWorkflows(
+  owner: string,
+  repo: string
+): Promise<Workflow[]> {
+  const session: any = await auth();
   const url = `${GITHUB_API_BASE}/repos/${owner}/${repo}/actions/workflows`;
   try {
     const res = await fetch(url, {
-      headers: commonHeaders,
-      next: { revalidate: 60 }, 
+      headers: {
+        ...commonHeaders,
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      next: { revalidate: 60 },
     });
 
     if (!res.ok) {
-      console.error(`Error fetching workflows: ${res.status} ${await res.text()}`);
+      console.error(
+        `Error fetching workflows: ${res.status} ${await res.text()}`
+      );
       return [];
     }
     const data: WorkflowsResponse = await res.json();
@@ -158,15 +200,23 @@ export async function getWorkflowRuns(
   perPage = 5, // Get recent 5 runs by default
   page = 1
 ): Promise<WorkflowRun[]> {
+  const session: any = await auth();
   const url = `${GITHUB_API_BASE}/repos/${owner}/${repo}/actions/workflows/${workflowId}/runs?per_page=${perPage}&page=${page}`;
   try {
     const res = await fetch(url, {
-      headers: commonHeaders,
+      headers: {
+        ...commonHeaders,
+        Authorization: `Bearer ${session.accessToken}`,
+      },
       next: { revalidate: 30 }, // Revalidate runs more frequently if needed
     });
 
     if (!res.ok) {
-      console.error(`Error fetching workflow runs for ${workflowId}: ${res.status} ${await res.text()}`);
+      console.error(
+        `Error fetching workflow runs for ${workflowId}: ${
+          res.status
+        } ${await res.text()}`
+      );
       return [];
     }
     const data: WorkflowRunsResponse = await res.json();

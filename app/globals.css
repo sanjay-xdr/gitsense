@@ -3,6 +3,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
+
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -44,6 +47,7 @@
 }
 
 :root {
+
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.13 0.028 261.692);
@@ -76,6 +80,19 @@
   --sidebar-accent-foreground: oklch(0.21 0.034 264.665);
   --sidebar-border: oklch(0.928 0.006 264.531);
   --sidebar-ring: oklch(0.707 0.022 261.325);
+   --chart-1: 142.1 76.2% 36.3%; /* Green - e.g., success */
+  --chart-2: 0 84.2% 60.2%;   /* Red - e.g., failure */
+  --chart-3: 215.3 19.5% 46.9%;/* Slate/Gray - e.g., cancelled */
+  --chart-4: 47.9 95.8% 53.1%; /* Yellow - e.g., skipped */
+  --chart-5: 221.2 83.2% 53.3%;/* Blue - e.g., in_progress */
+  
+  /* Additional distinct colors if needed */
+  --chart-queued: 35.3 92.5% 53.5%; /* Orange - e.g., queued, timed_out */
+  --chart-neutral: 220 8.9% 46.1%;  /* Muted Gray - e.g., neutral */
+  --chart-default: 220 13% 69%;   /* Light Gray - e.g., default/unknown */
+
+  /* Color for text on pie chart slices */
+  --pie-label-text: 240 10% 96%;
 }
 
 .dark {
@@ -110,6 +127,17 @@
   --sidebar-accent-foreground: oklch(0.985 0.002 247.839);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+  --chart-1: 142.1 70.6% 45.3%;
+  --chart-2: 0 72.2% 50.6%;
+  --chart-3: 217.9 16.5% 55.9%;
+  --chart-4: 47.9 95.8% 53.1%;
+  --chart-5: 212.7 88.5% 63.7%;
+
+  --chart-queued: 35.3 82.5% 63.5%;
+  --chart-neutral: 215 13.8% 34.1%;
+  --chart-default: 215 13.8% 34.1%;
+
+  --pie-label-text: 240 5% 10%; 
 }
 
 @layer base {
