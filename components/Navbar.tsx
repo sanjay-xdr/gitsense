@@ -17,25 +17,21 @@ export default async function Navbar() {
 
   const navLinks = [
     { href: "/repos", label: "Repos", icon: <GitFork className="h-4 w-4 md:mr-2" /> },
-    { href: "/feed", label: "Feed", icon: <Rss className="h-4 w-4 md:mr-2" /> },
-    // Add more links as needed
+    
   ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
-        {/* Logo and Desktop Site Name */}
         <Link
           href="/"
           className="mr-6 flex items-center space-x-2 text-lg font-bold text-primary hover:opacity-85 transition-opacity"
         >
-          <GitFork className="h-6 w-6" /> {/* Example Icon for Logo */}
+          <GitFork className="h-6 w-6" />
           <span className="hidden font-bold sm:inline-block">
             GitSense
           </span>
         </Link>
-
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex flex-1 items-center space-x-4 lg:space-x-6">
           {navLinks.map((link) => (
             <Link
@@ -47,8 +43,6 @@ export default async function Navbar() {
             </Link>
           ))}
         </nav>
-
-        {/* Right side: Auth and Mobile Menu Trigger */}
         <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
           {session?.user ? (
             <AvatarDropdown session={session} />
@@ -58,7 +52,6 @@ export default async function Navbar() {
             </div>
           )}
 
-          {/* Mobile Menu */}
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>

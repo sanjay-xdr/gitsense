@@ -26,5 +26,5 @@ console.log(session ," session from the middleware")
 
 export const config = {
   // Specify routes to apply middleware (protected routes)
-  matcher: ["/protected/:path*", "/repos/:path*"],
+  matcher: ["/stargazer/:path*", "/repos/:path*","/forks/:path*","/workflows/:path*"],
 };

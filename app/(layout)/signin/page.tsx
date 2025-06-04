@@ -4,9 +4,6 @@ import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
 import { Github } from "lucide-react";
 import { useRouter } from 'next/navigation';
-
-// import { sign } from "crypto";
-
 export default function Signin() {
         const router = useRouter();
 

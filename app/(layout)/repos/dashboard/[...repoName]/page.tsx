@@ -17,9 +17,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import UserCard from "@/components/UserCard";
 import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress"; // Ensure this path is correct
+import { Progress } from "@/components/ui/progress";
 
-// --- DATA FETCHING (DO NOT CHANGE as per instruction) ---
 async function fetchRepoDetails(owner: string, repo: string) {
   const session: any = await auth();
   const repoUrl = `https://api.github.com/repos/${owner}/${repo}`;
@@ -70,7 +69,6 @@ async function fetchRepoDetails(owner: string, repo: string) {
   }
 }
 
-// Helper function to format date (DO NOT CHANGE)
 function formatDate(dateString: string) {
   if (!dateString) return "N/A";
   const date = new Date(dateString);
@@ -94,10 +92,8 @@ function formatRelativeTime(dateString: string) {
 
 const getProgressValue = (value: number, maxReasonable: number) => Math.min(100, (value / maxReasonable) * 100);
 
-// --- COMPONENT (REDESIGNED) ---
 export default async function Page({ params }: { params: { repoName: string[] } }) {
   if (!params.repoName || params.repoName.length < 2) {
-    // ... Error handling for invalid path (same as before)
     return (
       <div className="container mx-auto flex min-h-screen items-center justify-center p-4">
         <Card className="w-full max-w-md text-center">
@@ -115,7 +111,6 @@ export default async function Page({ params }: { params: { repoName: string[] } 
   const { repoDetails, pullRequests, contributors, active_workflows_count } = await fetchRepoDetails(owner, repo);
 
   if (!repoDetails) {
-    // ... Error handling for repo not found (same as before)
     return (
       <div className="container mx-auto flex min-h-screen items-center justify-center p-4">
         <Card className="w-full max-w-md text-center">
@@ -146,7 +141,6 @@ export default async function Page({ params }: { params: { repoName: string[] } 
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
-      {/* Header Section (same as before) */}
       <header className="space-y-2">
         <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
@@ -184,7 +178,6 @@ export default async function Page({ params }: { params: { repoName: string[] } 
         </div>
       </header>
 
-      {/* Description (same as before) */}
       {repoDetails.description && (
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center"><FileText className="mr-2 h-5 w-5 text-muted-foreground" />Description</CardTitle></CardHeader>
@@ -192,7 +185,6 @@ export default async function Page({ params }: { params: { repoName: string[] } 
         </Card>
       )}
 
-      {/* Key Metrics Grid - NEW BEAUTIFUL DESIGN */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {metricCardsData.map((metric) => (
           <Card
@@ -237,7 +229,6 @@ export default async function Page({ params }: { params: { repoName: string[] } 
         ))}
       </div>
 
-      {/* Main Content Tabs (structure same as before, content adjusted) */}
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-3 sm:max-w-md">
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -245,12 +236,10 @@ export default async function Page({ params }: { params: { repoName: string[] } 
           <TabsTrigger value="contributors">Contributors ({contributors?.length || 0})</TabsTrigger>
         </TabsList>
 
-        {/* Overview Tab */}
         <TabsContent value="overview" className="mt-6 space-y-6">
           <Card>
             <CardHeader><CardTitle>Repository Information</CardTitle></CardHeader>
             <CardContent className="space-y-3 text-sm">
-              {/* ... Repository Info items (same as before) ... */}
               <div className="flex items-center justify-between"><span className="text-muted-foreground flex items-center"><CalendarDays className="mr-2 h-4 w-4"/>Created</span><span>{formatDate(repoDetails.created_at)}</span></div> <Separator />
               <div className="flex items-center justify-between"><span className="text-muted-foreground flex items-center"><Clock className="mr-2 h-4 w-4"/>Last Updated</span><span>{formatDate(repoDetails.updated_at)}</span></div> <Separator />
               <div className="flex items-center justify-between"><span className="text-muted-foreground flex items-center"><GitBranch className="mr-2 h-4 w-4"/>Default Branch</span><Badge variant="outline">{repoDetails.default_branch}</Badge></div> <Separator />
@@ -275,9 +264,7 @@ export default async function Page({ params }: { params: { repoName: string[] } 
           </Card>
         </TabsContent>
 
-        {/* Pull Requests Tab (same as before) */}
         <TabsContent value="pulls" className="mt-6">
-           {/* ... Pull Requests content (same as before, including labels map if desired) ... */}
            <Card>
             <CardHeader>
               <CardTitle className="flex items-center"><GitPullRequest className="mr-2 h-5 w-5 text-muted-foreground" /> Open Pull Requests</CardTitle>
@@ -316,9 +303,7 @@ export default async function Page({ params }: { params: { repoName: string[] } 
           </Card>
         </TabsContent>
 
-        {/* Contributors Tab (same as before) */}
         <TabsContent value="contributors" className="mt-6">
-          {/* ... Contributors content (same as before) ... */}
           <Card>
             <CardHeader><CardTitle className="flex items-center"><Users className="mr-2 h-5 w-5 text-muted-foreground"/> Top Contributors</CardTitle><CardDescription>Showing up to 10 top contributors.</CardDescription></CardHeader>
             <CardContent>

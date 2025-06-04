@@ -1,31 +1,34 @@
-// components/WorkflowDisplayClient.tsx
 "use client";
-
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import Link from 'next/link';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Workflow, WorkflowRun, getWorkflowRuns } from '@/utils/github/github'; // Adjust path
-
+import { useState, useEffect, useMemo, useCallback, JSX } from "react";
+import Link from "next/link";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { Workflow, WorkflowRun, getWorkflowRuns } from "@/utils/github/github";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"; // Adjust path
+} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"; // Adjust path
-import { Button } from "@/components/ui/button"; // Adjust path
-import { Skeleton } from "@/components/ui/skeleton"; // Adjust path
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"; // Adjust path
-import { Badge } from "@/components/ui/badge"; // Adjust path
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import {
-  ExternalLink,
   CheckCircle2,
   XCircle,
   CircleSlash,
@@ -38,8 +41,8 @@ import {
   Info,
   ListChecks,
   BarChart3,
-  RefreshCw
-} from 'lucide-react';
+  RefreshCw,
+} from "lucide-react";
 
 interface WorkflowDisplayClientProps {
   owner: string;
@@ -50,57 +53,112 @@ interface WorkflowDisplayClientProps {
 }
 
 const RUN_STATUS_COLORS: { [key: string]: string } = {
-  success: 'hsl(var(--chart-1))',
-  failure: 'hsl(var(--chart-2))',
-  cancelled: 'hsl(var(--chart-3))',
-  skipped: 'hsl(var(--chart-4))',
-  in_progress: 'hsl(var(--chart-5))',
-  queued: 'hsl(var(--chart-queued))',
-  neutral: 'hsl(var(--chart-neutral))',
-  timed_out: 'hsl(var(--chart-queued))',
-  action_required: 'hsl(var(--chart-queued))',
-  unknown: 'hsl(var(--chart-default))',
-  default: 'hsl(var(--chart-default))',
+  success: "hsl(var(--chart-1))",
+  failure: "hsl(var(--chart-2))",
+  cancelled: "hsl(var(--chart-3))",
+  skipped: "hsl(var(--chart-4))",
+  in_progress: "hsl(var(--chart-5))",
+  queued: "hsl(var(--chart-queued))",
+  neutral: "hsl(var(--chart-neutral))",
+  timed_out: "hsl(var(--chart-queued))",
+  action_required: "hsl(var(--chart-queued))",
+  unknown: "hsl(var(--chart-default))",
+  default: "hsl(var(--chart-default))",
 };
 
-function getStatusVisuals(status: WorkflowRun['status'], conclusion: WorkflowRun['conclusion']): { icon: JSX.Element, badgeVariant: "default" | "destructive" | "outline" | "secondary" | "success" | "warning" } {
+function getStatusVisuals(
+  status: WorkflowRun["status"],
+  conclusion: WorkflowRun["conclusion"]
+): {
+  icon: JSX.Element;
+  badgeVariant:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "success"
+    | "warning";
+} {
   const iconProps = { className: "h-4 w-4" };
-  let badgeVariant: "default" | "destructive" | "outline" | "secondary" | "success" | "warning" = "default";
+  let badgeVariant:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "success"
+    | "warning" = "default";
 
-  if (status === 'completed') {
-    if (conclusion === 'success') { badgeVariant = "success"; return { icon: <CheckCircle2 {...iconProps} />, badgeVariant };}
-    if (conclusion === 'failure') { badgeVariant = "destructive"; return { icon: <XCircle {...iconProps} />, badgeVariant };}
-    if (conclusion === 'cancelled') { badgeVariant = "secondary"; return { icon: <CircleSlash {...iconProps} />, badgeVariant };}
-    if (conclusion === 'skipped') { badgeVariant = "warning"; return { icon: <SkipForward {...iconProps} />, badgeVariant };}
-    if (conclusion === 'neutral') { badgeVariant = "outline"; return { icon: <Info {...iconProps} />, badgeVariant };}
-    if (conclusion === 'timed_out') { badgeVariant = "destructive"; return { icon: <Clock3 {...iconProps} />, badgeVariant };}
+  if (status === "completed") {
+    if (conclusion === "success") {
+      badgeVariant = "success";
+      return { icon: <CheckCircle2 {...iconProps} />, badgeVariant };
+    }
+    if (conclusion === "failure") {
+      badgeVariant = "destructive";
+      return { icon: <XCircle {...iconProps} />, badgeVariant };
+    }
+    if (conclusion === "cancelled") {
+      badgeVariant = "secondary";
+      return { icon: <CircleSlash {...iconProps} />, badgeVariant };
+    }
+    if (conclusion === "skipped") {
+      badgeVariant = "warning";
+      return { icon: <SkipForward {...iconProps} />, badgeVariant };
+    }
+    if (conclusion === "neutral") {
+      badgeVariant = "outline";
+      return { icon: <Info {...iconProps} />, badgeVariant };
+    }
+    if (conclusion === "timed_out") {
+      badgeVariant = "destructive";
+      return { icon: <Clock3 {...iconProps} />, badgeVariant };
+    }
   }
-  if (status === 'in_progress') { badgeVariant = "default"; return { icon: <Loader2 {...iconProps} className="animate-spin" />, badgeVariant };}
-  if (status === 'queued' || status === 'waiting') { badgeVariant = "outline"; return { icon: <Clock3 {...iconProps} />, badgeVariant };}
-  if (status === 'action_required') { badgeVariant = "warning"; return { icon: <AlertTriangle {...iconProps} />, badgeVariant };}
-  
+  if (status === "in_progress") {
+    badgeVariant = "default";
+    return {
+      icon: <Loader2 {...iconProps} className="animate-spin" />,
+      badgeVariant,
+    };
+  }
+  if (status === "queued" || status === "waiting") {
+    badgeVariant = "outline";
+    return { icon: <Clock3 {...iconProps} />, badgeVariant };
+  }
+  if (status === "action_required") {
+    badgeVariant = "warning";
+    return { icon: <AlertTriangle {...iconProps} />, badgeVariant };
+  }
+
   return { icon: <HelpCircle {...iconProps} />, badgeVariant };
 }
 
 const RUNS_TO_FETCH = 25;
 
 // Custom Label for Pie Chart Slices
-const CustomPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name, value, fill }: any) => {
+const CustomPieLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+  name,
+  value,
+  fill,
+}: any) => {
   if (percent < 0.05 && value < 3) return null; // Hide label for very small slices unless it's a significant count
 
   const RADIAN = Math.PI / 180;
   // Position label slightly outside for better readability on smaller slices, or inside for larger
   const radiusFactor = percent > 0.15 ? 0.6 : 0.7; // Adjust positioning logic
   const radius = innerRadius + (outerRadius - innerRadius) * radiusFactor;
-  const x = cx + (outerRadius - innerRadius + 20) * Math.cos(-midAngle * RADIAN); // Further out for line
-  const y = cy + (outerRadius - innerRadius + 20) * Math.sin(-midAngle * RADIAN);
-
-  const textAnchor = x > cx ? 'start' : 'end';
-
-  // Determine text color based on slice background for contrast
-  // This is a simple heuristic; more advanced logic might be needed for perfect contrast
-  // Or rely on --pie-label-text for a universally contrasting color
-  const labelColor = 'hsl(var(--pie-label-text))';
+  const x =
+    cx + (outerRadius - innerRadius + 20) * Math.cos(-midAngle * RADIAN); // Further out for line
+  const y =
+    cy + (outerRadius - innerRadius + 20) * Math.sin(-midAngle * RADIAN);
+  const textAnchor = x > cx ? "start" : "end";
+  const labelColor = "hsl(var(--pie-label-text))";
 
   return (
     <text
@@ -111,69 +169,83 @@ const CustomPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, n
       dominantBaseline="central"
       fontSize="11px"
       fontWeight="medium"
-      className="pointer-events-none" // Prevent labels from interfering with tooltip
+      className="pointer-events-none"
     >
       {`${name} (${value})`}
     </text>
   );
 };
 
-
 export default function WorkflowDisplayClient({
   owner,
   repo,
   initialWorkflows,
   initialSelectedWorkflowRuns,
-  initialSelectedWorkflowId
+  initialSelectedWorkflowId,
 }: WorkflowDisplayClientProps) {
   const [activeWorkflows, setActiveWorkflows] = useState<Workflow[]>([]);
-  const [selectedWorkflowId, setSelectedWorkflowId] = useState<number | null>(null);
-  const [selectedWorkflowRuns, setSelectedWorkflowRuns] = useState<WorkflowRun[]>([]);
-  const [isLoadingRuns, setIsLoadingRuns] = useState(true); // Start true if we expect an initial fetch
+  const [selectedWorkflowId, setSelectedWorkflowId] = useState<number | null>(
+    null
+  );
+  const [selectedWorkflowRuns, setSelectedWorkflowRuns] = useState<
+    WorkflowRun[]
+  >([]);
+  const [isLoadingRuns, setIsLoadingRuns] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasUsedInitialRuns, setHasUsedInitialRuns] = useState(false);
 
-  // Effect 1: Initialize active workflows and determine the initial selectedWorkflowId
   useEffect(() => {
-    const active = initialWorkflows.filter(wf => wf.state === 'active').sort((a, b) => a.name.localeCompare(b.name));
+    const active = initialWorkflows
+      .filter((wf) => wf.state === "active")
+      .sort((a, b) => a.name.localeCompare(b.name));
     setActiveWorkflows(active);
 
-    if (initialSelectedWorkflowId && active.some(wf => wf.id === initialSelectedWorkflowId)) {
+    if (
+      initialSelectedWorkflowId &&
+      active.some((wf) => wf.id === initialSelectedWorkflowId)
+    ) {
       setSelectedWorkflowId(initialSelectedWorkflowId);
     } else if (active.length > 0) {
       setSelectedWorkflowId(active[0].id);
     } else {
       setSelectedWorkflowId(null);
-      setIsLoadingRuns(false); // No workflows, so nothing to load
+      setIsLoadingRuns(false); 
     }
   }, [initialWorkflows, initialSelectedWorkflowId]);
 
-  const fetchRunsForSelectedWorkflow = useCallback(async (workflowId: number) => {
-    if (!workflowId) {
-      setSelectedWorkflowRuns([]);
-      setIsLoadingRuns(false);
-      return;
-    }
-    setIsLoadingRuns(true);
-    setError(null);
-    try {
-      const runs = await getWorkflowRuns(owner, repo, workflowId, RUNS_TO_FETCH);
-      setSelectedWorkflowRuns(runs);
-    } catch (e) {
-      console.error("Failed to fetch workflow runs:", e);
-      setError("Failed to load workflow runs. Please try again.");
-      setSelectedWorkflowRuns([]);
-    } finally {
-      setIsLoadingRuns(false);
-    }
-  }, [owner, repo]); // Stable dependencies
-
-  // Effect 2: Fetch runs when selectedWorkflowId changes or handle initial pre-fetched runs
-  useEffect(() => {
-    if (selectedWorkflowId === null) { // No workflow selected (e.g., no active workflows)
+  const fetchRunsForSelectedWorkflow = useCallback(
+    async (workflowId: number) => {
+      if (!workflowId) {
         setSelectedWorkflowRuns([]);
         setIsLoadingRuns(false);
         return;
+      }
+      setIsLoadingRuns(true);
+      setError(null);
+      try {
+        const runs = await getWorkflowRuns(
+          owner,
+          repo,
+          workflowId,
+          RUNS_TO_FETCH
+        );
+        setSelectedWorkflowRuns(runs);
+      } catch (e) {
+        console.error("Failed to fetch workflow runs:", e);
+        setError("Failed to load workflow runs. Please try again.");
+        setSelectedWorkflowRuns([]);
+      } finally {
+        setIsLoadingRuns(false);
+      }
+    },
+    [owner, repo]
+  ); 
+
+  useEffect(() => {
+    if (selectedWorkflowId === null) {
+      setSelectedWorkflowRuns([]);
+      setIsLoadingRuns(false);
+      return;
     }
 
     // Use pre-fetched initial runs if:
@@ -199,25 +271,27 @@ export default function WorkflowDisplayClient({
     initialSelectedWorkflowId,
     initialSelectedWorkflowRuns, // Prop, reference might change
     fetchRunsForSelectedWorkflow, // Stable due to useCallback
-    hasUsedInitialRuns
+    hasUsedInitialRuns,
   ]);
 
   const selectedWorkflowDetails = useMemo(() => {
-    return activeWorkflows.find(wf => wf.id === selectedWorkflowId);
+    return activeWorkflows.find((wf) => wf.id === selectedWorkflowId);
   }, [selectedWorkflowId, activeWorkflows]);
 
   const pieChartData = useMemo(() => {
     if (!selectedWorkflowRuns || selectedWorkflowRuns.length === 0) return [];
     const counts: { [key: string]: number } = {};
-    selectedWorkflowRuns.forEach(run => {
-      const key = (run.conclusion || run.status || 'unknown').toLowerCase();
+    selectedWorkflowRuns.forEach((run) => {
+      const key = (run.conclusion || run.status || "unknown").toLowerCase();
       counts[key] = (counts[key] || 0) + 1;
     });
     return Object.entries(counts).map(([statusKey, value]) => ({
-      name: statusKey.charAt(0).toUpperCase() + statusKey.slice(1).replace(/_/g, ' '),
+      name:
+        statusKey.charAt(0).toUpperCase() +
+        statusKey.slice(1).replace(/_/g, " "),
       value,
       fill: RUN_STATUS_COLORS[statusKey] || RUN_STATUS_COLORS.default,
-      statusKey: statusKey
+      statusKey: statusKey,
     }));
   }, [selectedWorkflowRuns]);
 
@@ -232,26 +306,50 @@ export default function WorkflowDisplayClient({
     // the useEffect logic will decide if it needs to re-fetch or can use them (if not used yet).
     // Generally, changing selection implies wanting fresh data for that selection.
     if (newId !== initialSelectedWorkflowId) {
-        setHasUsedInitialRuns(true); // Mark that initial runs are definitely not for this new selection
+      setHasUsedInitialRuns(true); // Mark that initial runs are definitely not for this new selection
     } else {
-        setHasUsedInitialRuns(false); // Allow potential use of initial runs if switching back to initial ID
+      setHasUsedInitialRuns(false); // Allow potential use of initial runs if switching back to initial ID
     }
   };
 
   if (initialWorkflows.length === 0) {
     return (
       <Card>
-        <CardHeader><CardTitle>No Workflows Found</CardTitle></CardHeader>
-        <CardContent><Alert><Info className="h-4 w-4" /><AlertTitle>Information</AlertTitle><AlertDescription>No GitHub Actions workflows were found for <code className="font-mono text-sm bg-muted px-1 py-0.5 rounded">{owner}/{repo}</code>.</AlertDescription></Alert></CardContent>
+        <CardHeader>
+          <CardTitle>No Workflows Found</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertTitle>Information</AlertTitle>
+            <AlertDescription>
+              No GitHub Actions workflows were found for{" "}
+              <code className="font-mono text-sm bg-muted px-1 py-0.5 rounded">
+                {owner}/{repo}
+              </code>
+              .
+            </AlertDescription>
+          </Alert>
+        </CardContent>
       </Card>
     );
   }
 
   if (activeWorkflows.length === 0) {
-     return (
+    return (
       <Card>
-        <CardHeader><CardTitle>No Active Workflows</CardTitle></CardHeader>
-        <CardContent><Alert><Info className="h-4 w-4" /><AlertTitle>Information</AlertTitle><AlertDescription>There are no active GitHub Actions workflows for this repository.</AlertDescription></Alert></CardContent>
+        <CardHeader>
+          <CardTitle>No Active Workflows</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertTitle>Information</AlertTitle>
+            <AlertDescription>
+              There are no active GitHub Actions workflows for this repository.
+            </AlertDescription>
+          </Alert>
+        </CardContent>
       </Card>
     );
   }
@@ -261,11 +359,13 @@ export default function WorkflowDisplayClient({
       <Card>
         <CardHeader>
           <CardTitle>Select Workflow</CardTitle>
-          <CardDescription>Choose an active workflow to see its details and recent run history.</CardDescription>
+          <CardDescription>
+            Choose an active workflow to see its details and recent run history.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Select
-            value={selectedWorkflowId?.toString() || ''}
+            value={selectedWorkflowId?.toString() || ""}
             onValueChange={handleWorkflowChange}
             disabled={isLoadingRuns && !selectedWorkflowId} // More nuanced disabled state
           >
@@ -273,7 +373,7 @@ export default function WorkflowDisplayClient({
               <SelectValue placeholder="-- Choose a workflow --" />
             </SelectTrigger>
             <SelectContent>
-              {activeWorkflows.map(wf => (
+              {activeWorkflows.map((wf) => (
                 <SelectItem key={wf.id} value={wf.id.toString()}>
                   {wf.name}
                 </SelectItem>
@@ -295,17 +395,29 @@ export default function WorkflowDisplayClient({
         <Card>
           <CardHeader>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <CardTitle className="text-xl">{selectedWorkflowDetails.name}</CardTitle>
-                <Button variant="outline" size="sm" asChild>
-                    <Link href={selectedWorkflowDetails.html_url} target="_blank" rel="noopener noreferrer">
-                        <FileText className="mr-2 h-4 w-4" /> View Workflow File
-                    </Link>
-                </Button>
+              <CardTitle className="text-xl">
+                {selectedWorkflowDetails.name}
+              </CardTitle>
+              <Button variant="outline" size="sm" asChild>
+                <Link
+                  href={selectedWorkflowDetails.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FileText className="mr-2 h-4 w-4" /> View Workflow File
+                </Link>
+              </Button>
             </div>
             <CardDescription className="mt-1">
-              Path: <code className="text-xs bg-muted px-1 py-0.5 rounded font-mono">{selectedWorkflowDetails.path}</code>
+              Path:{" "}
+              <code className="text-xs bg-muted px-1 py-0.5 rounded font-mono">
+                {selectedWorkflowDetails.path}
+              </code>
               <span className="mx-2">·</span>
-              Last Updated: {new Date(selectedWorkflowDetails.updated_at).toLocaleDateString()}
+              Last Updated:{" "}
+              {new Date(
+                selectedWorkflowDetails.updated_at
+              ).toLocaleDateString()}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -329,61 +441,76 @@ export default function WorkflowDisplayClient({
                 <Card className="lg:col-span-1">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center">
-                        <BarChart3 className="mr-2 h-5 w-5 text-muted-foreground"/>
-                        Run Status Distribution
+                      <BarChart3 className="mr-2 h-5 w-5 text-muted-foreground" />
+                      Run Status Distribution
                     </CardTitle>
-                    <CardDescription>Based on the latest {selectedWorkflowRuns.length} runs.</CardDescription>
+                    <CardDescription>
+                      Based on the latest {selectedWorkflowRuns.length} runs.
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="flex items-center justify-center">
-                    <div style={{ width: '100%', height: 340 }}>
+                    <div style={{ width: "100%", height: 340 }}>
                       <ResponsiveContainer>
-                        <PieChart margin={{ top: 5, right: 5, bottom: 20, left: 5 }}> {/* Increased bottom margin for legend */}
+                        <PieChart
+                          margin={{ top: 5, right: 5, bottom: 20, left: 5 }}
+                        >
+                          {" "}
+                          {/* Increased bottom margin for legend */}
                           <Pie
                             data={pieChartData}
                             cx="50%"
                             cy="50%"
                             labelLine={false} // Set to true if you prefer lines to CustomPieLabel
                             outerRadius={100} // Slightly adjusted
-                            innerRadius={55}  // Slightly adjusted
+                            innerRadius={55} // Slightly adjusted
                             fill="#8884d8"
                             dataKey="value"
                             label={<CustomPieLabel />}
                           >
                             {pieChartData.map((entry) => (
-                              <Cell 
+                              <Cell
                                 key={`cell-${entry.statusKey}-${entry.value}`}
-                                fill={entry.fill} 
+                                fill={entry.fill}
                                 className="focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1"
                               />
                             ))}
                           </Pie>
                           <Tooltip
                             offset={30}
-                            cursor={{ fill: 'hsla(var(--muted)/0.3)' }}
+                            cursor={{ fill: "hsla(var(--muted)/0.3)" }}
                             formatter={(value, name, props) => {
-                                const percentage = props.payload?.percent;
-                                return [`${value} runs ${percentage ? `(${(percentage * 100).toFixed(1)}%)` : ''}`, props.payload?.name];
+                              const percentage = props.payload?.percent;
+                              return [
+                                `${value} runs ${
+                                  percentage
+                                    ? `(${(percentage * 100).toFixed(1)}%)`
+                                    : ""
+                                }`,
+                                props.payload?.name,
+                              ];
                             }}
                             contentStyle={{
-                                backgroundColor: 'hsl(var(--popover))',
-                                color: 'hsl(var(--popover-foreground))',
-                                borderColor: 'hsl(var(--border))',
-                                borderRadius: 'var(--radius)',
-                                boxShadow: 'var(--shadow-md)', // Shadcn shadow
-                                fontSize: '0.875rem',
-                                padding: '0.5rem 0.75rem',
+                              backgroundColor: "hsl(var(--popover))",
+                              color: "hsl(var(--popover-foreground))",
+                              borderColor: "hsl(var(--border))",
+                              borderRadius: "var(--radius)",
+                              boxShadow: "var(--shadow-md)", // Shadcn shadow
+                              fontSize: "0.875rem",
+                              padding: "0.5rem 0.75rem",
                             }}
                             wrapperStyle={{ zIndex: 50 }} // Ensure tooltip is on top but allow select dropdown to be higher
                           />
                           <Legend
                             iconSize={10}
                             wrapperStyle={{
-                                fontSize: '0.8rem',
-                                paddingTop: '15px', // Space for legend below chart
-                                lineHeight: '1.6',
+                              fontSize: "0.8rem",
+                              paddingTop: "15px", // Space for legend below chart
+                              lineHeight: "1.6",
                             }}
                             formatter={(value) => (
-                                <span style={{ color: 'hsl(var(--foreground))' }}>{value}</span>
+                              <span style={{ color: "hsl(var(--foreground))" }}>
+                                {value}
+                              </span>
                             )}
                           />
                         </PieChart>
@@ -393,59 +520,110 @@ export default function WorkflowDisplayClient({
                 </Card>
 
                 <Card className="lg:col-span-2">
-                    <CardHeader>
-                        <div className="flex items-center justify-between">
-                            <CardTitle className="text-lg flex items-center">
-                                <ListChecks className="mr-2 h-5 w-5 text-muted-foreground"/>
-                                Recent Runs
-                            </CardTitle>
-                            <Button variant="ghost" size="sm" onClick={() => selectedWorkflowId && fetchRunsForSelectedWorkflow(selectedWorkflowId)} disabled={isLoadingRuns}>
-                                <RefreshCw className={`mr-2 h-4 w-4 ${isLoadingRuns ? 'animate-spin' : ''}`} />
-                                Refresh
-                            </Button>
-                        </div>
-                        <CardDescription>Showing the latest {selectedWorkflowRuns.length} runs.</CardDescription>
-                    </CardHeader>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg flex items-center">
+                        <ListChecks className="mr-2 h-5 w-5 text-muted-foreground" />
+                        Recent Runs
+                      </CardTitle>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          selectedWorkflowId &&
+                          fetchRunsForSelectedWorkflow(selectedWorkflowId)
+                        }
+                        disabled={isLoadingRuns}
+                      >
+                        <RefreshCw
+                          className={`mr-2 h-4 w-4 ${
+                            isLoadingRuns ? "animate-spin" : ""
+                          }`}
+                        />
+                        Refresh
+                      </Button>
+                    </div>
+                    <CardDescription>
+                      Showing the latest {selectedWorkflowRuns.length} runs.
+                    </CardDescription>
+                  </CardHeader>
                   <CardContent className="pr-1">
                     <ul className="space-y-3 max-h-[500px] overflow-y-auto pr-3">
                       {selectedWorkflowRuns.map((run) => {
-                        const { icon, badgeVariant } = getStatusVisuals(run.status, run.conclusion);
+                        const { icon, badgeVariant } = getStatusVisuals(
+                          run.status,
+                          run.conclusion
+                        );
                         const runTitle = `${run.event} - Run #${run.run_number}`;
                         return (
                           <li key={run.id}>
-                            <Link href={run.html_url} target="_blank" rel="noopener noreferrer" className="block hover:bg-accent/50 transition-colors rounded-md p-3 border">
-                                <div className="flex items-center justify-between gap-2">
-                                  <div className="flex items-center space-x-2 min-w-0">
-                                    <span className="text-lg shrink-0">{icon}</span>
-                                    <span className="font-medium text-sm text-foreground truncate" title={runTitle}>
-                                      {runTitle}
-                                    </span>
-                                  </div>
-                                  <Badge variant={badgeVariant} className="whitespace-nowrap capitalize shrink-0 flex items-center">
-                                    {/* Icon can be part of the badge if desired, or keep separate */}
-                                    {/* {icon} <span className="ml-1.5"> {run.conclusion || run.status}</span> */}
-                                    {run.conclusion || run.status}
-                                  </Badge>
-                                </div>
-                                <div className="mt-1.5 text-xs text-muted-foreground space-x-1.5 flex flex-wrap items-center">
-                                  <span>
-                                    By <span className="font-medium text-foreground">{run.actor.login}</span>
+                            <Link
+                              href={run.html_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block hover:bg-accent/50 transition-colors rounded-md p-3 border"
+                            >
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center space-x-2 min-w-0">
+                                  <span className="text-lg shrink-0">
+                                    {icon}
                                   </span>
-                                  <span className="hidden sm:inline">·</span>
-                                  <span className="block sm:inline mt-0.5 sm:mt-0">{new Date(run.created_at).toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-                                  {run.head_branch && (
-                                    <>
-                                      <span className="hidden sm:inline">·</span>
-                                      <span className="block sm:inline mt-0.5 sm:mt-0">
-                                        on <code className="text-xs bg-muted px-1 py-0.5 rounded font-mono">{run.head_branch}</code>
-                                      </span>
-                                    </>
-                                  )}
+                                  <span
+                                    className="font-medium text-sm text-foreground truncate"
+                                    title={runTitle}
+                                  >
+                                    {runTitle}
+                                  </span>
                                 </div>
-                                {run.display_title && run.display_title !== run.event && (
-                                    <p className="mt-1 text-xs text-muted-foreground truncate" title={run.display_title}>
-                                        Commit: {run.display_title}
-                                    </p>
+                                <Badge
+                                  variant={badgeVariant}
+                                  className="whitespace-nowrap capitalize shrink-0 flex items-center"
+                                >
+                                  {/* Icon can be part of the badge if desired, or keep separate */}
+                                  {/* {icon} <span className="ml-1.5"> {run.conclusion || run.status}</span> */}
+                                  {run.conclusion || run.status}
+                                </Badge>
+                              </div>
+                              <div className="mt-1.5 text-xs text-muted-foreground space-x-1.5 flex flex-wrap items-center">
+                                <span>
+                                  By{" "}
+                                  <span className="font-medium text-foreground">
+                                    {run.actor.login}
+                                  </span>
+                                </span>
+                                <span className="hidden sm:inline">·</span>
+                                <span className="block sm:inline mt-0.5 sm:mt-0">
+                                  {new Date(run.created_at).toLocaleString(
+                                    undefined,
+                                    {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    }
+                                  )}
+                                </span>
+                                {run.head_branch && (
+                                  <>
+                                    <span className="hidden sm:inline">·</span>
+                                    <span className="block sm:inline mt-0.5 sm:mt-0">
+                                      on{" "}
+                                      <code className="text-xs bg-muted px-1 py-0.5 rounded font-mono">
+                                        {run.head_branch}
+                                      </code>
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                              {run.display_title &&
+                                run.display_title !== run.event && (
+                                  <p
+                                    className="mt-1 text-xs text-muted-foreground truncate"
+                                    title={run.display_title}
+                                  >
+                                    Commit: {run.display_title}
+                                  </p>
                                 )}
                             </Link>
                           </li>
@@ -459,7 +637,9 @@ export default function WorkflowDisplayClient({
               <Alert>
                 <Info className="h-4 w-4" />
                 <AlertTitle>No Runs Found</AlertTitle>
-                <AlertDescription>No recent runs found for this workflow.</AlertDescription>
+                <AlertDescription>
+                  No recent runs found for this workflow.
+                </AlertDescription>
               </Alert>
             )}
           </CardContent>
@@ -468,15 +648,16 @@ export default function WorkflowDisplayClient({
 
       {!selectedWorkflowId && !isLoadingRuns && activeWorkflows.length > 0 && (
         <Card>
-            <CardContent className="pt-6">
+          <CardContent className="pt-6">
             <Alert>
-                <Info className="h-4 w-4" />
-                <AlertTitle>Select a Workflow</AlertTitle>
-                <AlertDescription>
-                Please select a workflow from the dropdown to view its details and run history.
-                </AlertDescription>
+              <Info className="h-4 w-4" />
+              <AlertTitle>Select a Workflow</AlertTitle>
+              <AlertDescription>
+                Please select a workflow from the dropdown to view its details
+                and run history.
+              </AlertDescription>
             </Alert>
-            </CardContent>
+          </CardContent>
         </Card>
       )}
     </div>

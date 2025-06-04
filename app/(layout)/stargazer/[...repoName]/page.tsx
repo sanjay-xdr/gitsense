@@ -16,7 +16,6 @@ export default async function Page({
   let urlQuery=await searchParams;
  const page=parseInt(urlQuery?.page) || 1;
 
-  // Fetch one extra to check if there are more pages
   const stargazers = await getStargazers(owner, repo, perPage, page);
   const hasNext = stargazers.length === perPage;
   const hasPrev = page > 1;
