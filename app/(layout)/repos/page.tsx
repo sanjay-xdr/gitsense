@@ -1,6 +1,6 @@
 import axios from "axios";
-import { auth } from "../auth";
-import RepoDropdown from "../../components/RepoDropDown";
+import { auth } from "../../auth";
+import RepoDropdown from "../../../components/RepoDropDown";
 import { Card, CardContent } from "@/components/ui/card";
 import { SearchForm } from "@/components/search-form";
 

@@ -1,4 +1,3 @@
-import UserDetails from "@/app/userDetails/[userName]/page";
 import UserCard from "@/components/UserCard";
 import { getStargazers } from "@/utils/github/github";
 import React from "react";
