@@ -1,16 +1,22 @@
 import React from 'react'
 import Navbar from '@/components/Navbar'
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 export default function NavLayout({children}:{children:React.ReactNode}) {
   return (
     <>
- <div style={{border:"1px solid red"}} className='flex justify-center w-full'>
+ 
+ <div>
      <Navbar/>
  </div>
     
     <div>
         {children}
     </div>
+   <footer className="bg-slate-100 dark:bg-slate-800 p-4 text-center text-sm text-slate-600 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700">
+        This site is currently a work in progress.
+      </footer>
+    
     </>
   )
 }

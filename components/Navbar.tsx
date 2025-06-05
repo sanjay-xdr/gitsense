@@ -1,6 +1,6 @@
-// components/Navbar.tsx (or wherever your original Navbar was)
+// components/Navbar.tsx
 import Link from "next/link";
-import { auth } from "../app/auth"; // Ensure this path is correct for your app router auth
+import { auth } from "../app/auth";
 import AvatarDropdown from "./AvatarDropdown";
 import LoginButton from "./LoginButton";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
-import { Menu, GitFork, Rss, Home } from "lucide-react"; // Using GitFork for logo-like icon
+import { Menu, GitFork, Home } from "lucide-react";
 
 export default async function Navbar() {
   const session = await auth();
@@ -22,7 +22,7 @@ export default async function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 max-w-screen-2xl items-center">
+      <div className="container flex h-14 max-w-screen-2xl items-center justify-center">
         <Link
           href="/"
           className="mr-6 flex items-center space-x-2 text-lg font-bold text-primary hover:opacity-85 transition-opacity"

@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { Activity, GitPullRequest, Users, Code, TrendingUp, Zap } from "lucide-react"
+import { Activity, GitPullRequest, Users, Code, TrendingUp, Zap,Star,PieChart } from "lucide-react"
 
-type FeatureIconType = "activity" | "git-pull-request" | "users" | "code" | "trending-up" | "zap"
+type FeatureIconType = "activity" | "git-pull-request" | "users" | "code" | "trending-up" | "zap" | "star"|"pie-chart"
 
 interface FeatureCardProps {
   icon: FeatureIconType
@@ -16,6 +16,8 @@ const iconComponents = {
   code: Code,
   "trending-up": TrendingUp,
   zap: Zap,
+  star:Star,
+  "pie-chart":PieChart
 }
 
 export function FeatureCard({ icon, title, description }: FeatureCardProps) {

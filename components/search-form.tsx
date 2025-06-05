@@ -7,12 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 
-// Helper function to extract owner/repo from input
 function extractOwnerRepo(input: string): { owner: string; repo: string } | null {
-  // Remove whitespace
   const trimmed = input.trim();
 
-  // Check if input is a full GitHub URL
   const urlMatch = trimmed.match(
     /^https?:\/\/(www\.)?github\.com\/([^\/\s]+)\/([^\/\s]+)(?:\/.*)?$/
   );
@@ -57,7 +54,7 @@ export function SearchForm() {
       </div>
       <Button
         type="submit"
-        className="bg-blue-600 hover:bg-blue-700 text-white"
+        className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
       >
         Explore
       </Button>
