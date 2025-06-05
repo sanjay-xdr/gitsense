@@ -135,7 +135,6 @@ function getStatusVisuals(
 
 const RUNS_TO_FETCH = 25;
 
-// Custom Label for Pie Chart Slices
 const CustomPieLabel = ({
   cx,
   cy,
@@ -147,7 +146,7 @@ const CustomPieLabel = ({
   value,
   fill,
 }: any) => {
-  if (percent < 0.05 && value < 3) return null; // Hide label for very small slices unless it's a significant count
+  if (percent < 0.05 && value < 3) return null;
 
   const RADIAN = Math.PI / 180;
   // Position label slightly outside for better readability on smaller slices, or inside for larger
@@ -298,17 +297,10 @@ export default function WorkflowDisplayClient({
   const handleWorkflowChange = (value: string) => {
     const newId = Number(value);
     setSelectedWorkflowId(newId);
-    // When user changes workflow, we intend to fetch new data.
-    // Reset hasUsedInitialRuns so if they switch back to the initial one,
-    // it doesn't try to use potentially stale pre-fetched data without a new fetch.
-    // However, the primary fetch trigger is selectedWorkflowId change.
-    // If the newId IS the initialSelectedWorkflowId, and initial runs were provided,
-    // the useEffect logic will decide if it needs to re-fetch or can use them (if not used yet).
-    // Generally, changing selection implies wanting fresh data for that selection.
     if (newId !== initialSelectedWorkflowId) {
-      setHasUsedInitialRuns(true); // Mark that initial runs are definitely not for this new selection
+      setHasUsedInitialRuns(true);
     } else {
-      setHasUsedInitialRuns(false); // Allow potential use of initial runs if switching back to initial ID
+      setHasUsedInitialRuns(false);
     }
   };
 
@@ -367,7 +359,7 @@ export default function WorkflowDisplayClient({
           <Select
             value={selectedWorkflowId?.toString() || ""}
             onValueChange={handleWorkflowChange}
-            disabled={isLoadingRuns && !selectedWorkflowId} // More nuanced disabled state
+            disabled={isLoadingRuns && !selectedWorkflowId} 
           >
             <SelectTrigger className="w-full md:w-[350px]">
               <SelectValue placeholder="-- Choose a workflow --" />
@@ -455,14 +447,13 @@ export default function WorkflowDisplayClient({
                           margin={{ top: 5, right: 5, bottom: 20, left: 5 }}
                         >
                           {" "}
-                          {/* Increased bottom margin for legend */}
                           <Pie
                             data={pieChartData}
                             cx="50%"
                             cy="50%"
-                            labelLine={false} // Set to true if you prefer lines to CustomPieLabel
-                            outerRadius={100} // Slightly adjusted
-                            innerRadius={55} // Slightly adjusted
+                            labelLine={false} 
+                            outerRadius={100} 
+                            innerRadius={55} 
                             fill="#8884d8"
                             dataKey="value"
                             label={<CustomPieLabel />}
@@ -494,17 +485,17 @@ export default function WorkflowDisplayClient({
                               color: "hsl(var(--popover-foreground))",
                               borderColor: "hsl(var(--border))",
                               borderRadius: "var(--radius)",
-                              boxShadow: "var(--shadow-md)", // Shadcn shadow
+                              boxShadow: "var(--shadow-md)",
                               fontSize: "0.875rem",
                               padding: "0.5rem 0.75rem",
                             }}
-                            wrapperStyle={{ zIndex: 50 }} // Ensure tooltip is on top but allow select dropdown to be higher
+                            wrapperStyle={{ zIndex: 50 }} 
                           />
                           <Legend
                             iconSize={10}
                             wrapperStyle={{
                               fontSize: "0.8rem",
-                              paddingTop: "15px", // Space for legend below chart
+                              paddingTop: "15px",
                               lineHeight: "1.6",
                             }}
                             formatter={(value) => (
@@ -579,8 +570,7 @@ export default function WorkflowDisplayClient({
                                   variant={badgeVariant}
                                   className="whitespace-nowrap capitalize shrink-0 flex items-center"
                                 >
-                                  {/* Icon can be part of the badge if desired, or keep separate */}
-                                  {/* {icon} <span className="ml-1.5"> {run.conclusion || run.status}</span> */}
+
                                   {run.conclusion || run.status}
                                 </Badge>
                               </div>
