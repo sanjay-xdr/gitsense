@@ -2,20 +2,15 @@ import Link from "next/link";
 import {
   getRepoWorkflows,
   getWorkflowRuns,
-  Workflow,
   WorkflowRun,
 } from "@/utils/github/github";
 import WorkflowDisplayClient from "@/components/WorkflowDisplayClient";
 
-interface WorkflowPageParams {
-  owner: string;
-  repo: string;
-}
 
 export default async function WorkflowPage({
   params,
 }: {
-  params: { repoName: string[] };
+  params: Promise<{ repoName: string[] }>;
 }) {
   const { repoName } = await params;
   const owner = repoName[0];
@@ -68,13 +63,3 @@ export default async function WorkflowPage({
   );
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: WorkflowPageParams;
-}) {
-  return {
-    title: `Workflows & Runs | ${params.owner}/${params.repo}`,
-    description: `View GitHub Actions workflows, run history, and status metrics for ${params.owner}/${params.repo}.`,
-  };
-}

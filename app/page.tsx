@@ -1,18 +1,16 @@
 // import { SearchForm } from "@/components/search-form"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
+// import {
+//   Card,
+//   CardContent,
+//   CardHeader,
+//   CardDescription,
+//   CardTitle,
+// } from "@/components/ui/card";
 import { BackgroundFlare } from "@/components/background-flare";
 import { GitHubIcon } from "@/components/github-icon";
 import { FeatureCard } from "@/components/feature-card";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { SearchForm } from "@/components/search-form";
-import { Search } from "lucide-react";
+
 
 export default function Home() {
   return (

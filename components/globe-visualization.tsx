@@ -25,22 +25,17 @@ interface Arc {
 }
 
 export function GlobeVisualization() {
-  const globeRef = useRef<any>()
+  const globeRef = useRef<any>({})
   const [countries, setCountries] = useState<any[]>([])
   const [arcs, setArcs] = useState<Arc[]>([])
   const [contributors, setContributors] = useState<Contributor[]>([])
-  const [globeReady, setGlobeReady] = useState(false)
   const [stats, setStats] = useState({
     totalContributions: 0,
     totalCountries: 0,
     topCountry: "",
     topContributions: 0,
   })
-
-  // USA coordinates (repository origin)
   const USA_COORDINATES: [number, number] = [37.0902, -95.7129]
-
-  // Sample contributor data - in a real app, this would come from an API
   const SAMPLE_CONTRIBUTORS: Contributor[] = [
     {
       country: "United Kingdom",
@@ -128,10 +123,6 @@ export function GlobeVisualization() {
         altitude: 2.5,
       })
 
-      // Start auto-rotation after a delay
-      setTimeout(() => {
-        setGlobeReady(true)
-      }, 1000)
     }
   }, [globeRef.current])
 
@@ -174,8 +165,6 @@ export function GlobeVisualization() {
             height={600}
             backgroundColor="rgba(0,0,0,0)"
             animateIn={true}
-            // autoRotate={globeReady}
-            // autoRotateSpeed={0.5}
           />
         )}
       </div>

@@ -6,14 +6,14 @@ import React from "react";
 export default async function Page({
   params,searchParams
 }: {
-  params: { repoName: string[] },
-  searchParams: any
+  params: Promise<{ repoName: string[] }>,
+  searchParams:Promise<any>
 }) {
   const { repoName } = await params;
   const owner = repoName[0];
   const repo = repoName[1];
   const perPage = 12;
-  let urlQuery=await searchParams;
+  const urlQuery=await searchParams;
  const page=parseInt(urlQuery?.page) || 1;
 
   const stargazers = await getStargazers(owner, repo, perPage, page);
@@ -29,7 +29,8 @@ export default async function Page({
         </span>
       </h1>
       <ul className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {stargazers.map((user) => (
+     
+        {stargazers.map( (user:any) => (
           <UserCard key={user.id} contributor={user} />
         ))}
       </ul>

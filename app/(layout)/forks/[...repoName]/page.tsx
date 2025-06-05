@@ -13,7 +13,7 @@ export default async function Page({
   const owner = repoName[0];
   const repo = repoName[1];
   const perPage = 12;
-  let urlQuery=await searchParams;
+  const urlQuery=await searchParams;
  const page=parseInt(urlQuery?.page) || 1;
 
   // Fetch one extra to check if there are more pages

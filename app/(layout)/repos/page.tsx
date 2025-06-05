@@ -84,7 +84,7 @@ export default async function Dashboard() {
                 <ListTree className="h-4 w-4" />
                 <AlertTitle>No Repositories Found</AlertTitle>
                 <AlertDescription>
-                  We couldn't find any repositories associated with your GitHub
+                  We could not find any repositories associated with your GitHub
                   account, or there was an issue fetching them. You can try
                   searching for a public repository below.
                 </AlertDescription>

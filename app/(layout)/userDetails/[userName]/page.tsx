@@ -1,10 +1,9 @@
 import { fetchUserDetails } from '@/utils/github/github';
-import axios from 'axios';
 import React from 'react';
 
 
 
-export default async function UserDetails({ params }: { params: { userName: string } }) {
+export default async function UserDetails({ params }: { params: Promise<{ userName: string }> }) {
   const { userName } = await params;
   const userDetails = await fetchUserDetails(userName);
   console.log(userDetails);

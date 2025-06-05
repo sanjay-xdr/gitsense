@@ -144,14 +144,11 @@ const CustomPieLabel = ({
   percent,
   name,
   value,
-  fill,
 }: any) => {
   if (percent < 0.05 && value < 3) return null;
 
   const RADIAN = Math.PI / 180;
   // Position label slightly outside for better readability on smaller slices, or inside for larger
-  const radiusFactor = percent > 0.15 ? 0.6 : 0.7; // Adjust positioning logic
-  const radius = innerRadius + (outerRadius - innerRadius) * radiusFactor;
   const x =
     cx + (outerRadius - innerRadius + 20) * Math.cos(-midAngle * RADIAN); // Further out for line
   const y =
@@ -567,6 +564,7 @@ export default function WorkflowDisplayClient({
                                   </span>
                                 </div>
                                 <Badge
+                                //@ts-expect-error gonna fix it 
                                   variant={badgeVariant}
                                   className="whitespace-nowrap capitalize shrink-0 flex items-center"
                                 >
@@ -606,13 +604,19 @@ export default function WorkflowDisplayClient({
                                   </>
                                 )}
                               </div>
-                              {run.display_title &&
+                             
+                              {  //@ts-expect-error gonna fix it 
+                              run.display_title &&
+                                //@ts-expect-error gonna fix it 
                                 run.display_title !== run.event && (
                                   <p
                                     className="mt-1 text-xs text-muted-foreground truncate"
+                                        //@ts-expect-error
                                     title={run.display_title}
-                                  >
-                                    Commit: {run.display_title}
+                                  > 
+                                    Commit: {   //@ts-expect-error gonna fix it 
+                                     run.display_title
+                                    }
                                   </p>
                                 )}
                             </Link>

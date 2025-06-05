@@ -3,9 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
 import { Github } from "lucide-react";
-import { useRouter } from 'next/navigation';
 export default function Signin() {
-        const router = useRouter();
 
   return (
     <div className="flex justify-center items-center w-screen h-screen ">

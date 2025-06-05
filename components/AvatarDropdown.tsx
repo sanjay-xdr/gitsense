@@ -1,9 +1,7 @@
-// components/AvatarDropdown.tsx
 "use client";
 
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
-import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,12 +9,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"; // Adjust path
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; // Adjust path
-import { User, LogOut, Settings, LayoutDashboard } from "lucide-react"; // Added more icons
+} from "@/components/ui/dropdown-menu"; 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {LogOut } from "lucide-react";
 
 interface AvatarDropdownProps {
-  session: Session; // Use the Session type from next-auth
+  session: Session; 
 }
 
 export default function AvatarDropdown({ session }: AvatarDropdownProps) {
